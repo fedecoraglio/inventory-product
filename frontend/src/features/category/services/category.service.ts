@@ -1,5 +1,4 @@
 import {
-  BehaviorSubject,
   EMPTY,
   Observable,
   catchError,
@@ -9,15 +8,8 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import {
-  Injectable,
-  WritableSignal,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 import { CategoryDto, CategoryListDto } from '../types/category.types';
 import { CategoryApiService } from '../api/category-api.service';
@@ -58,14 +50,14 @@ export class CategoryService {
 
   getById$(id: string): Observable<CategoryDto> {
     return this.categoryApiService.getById$(id).pipe(
-      tap((category) => {
+      tap(category => {
         this._categorySignal.set(category);
       }),
     );
   }
 
   save$(dto: CategoryDto): Observable<CategoryDto> {
-    this._isLoadingSignal.update((isLoading) => (isLoading = true));
+    this._isLoadingSignal.update(isLoading => (isLoading = true));
     return this.categoryApiService.save$(dto).pipe(
       catchError(({ error }) => {
         this.snackBarService.showError(error?.message || error?.statusText);
@@ -73,13 +65,13 @@ export class CategoryService {
         return EMPTY;
       }),
       finalize(() =>
-        this._isLoadingSignal.update((isLoading) => (isLoading = false)),
+        this._isLoadingSignal.update(isLoading => (isLoading = false)),
       ),
     );
   }
 
   update$(id: string, dto: CategoryDto): Observable<CategoryDto> {
-    this._isLoadingSignal.update((isLoading) => (isLoading = true));
+    this._isLoadingSignal.update(isLoading => (isLoading = true));
     return this.categoryApiService.update$(id, dto).pipe(
       catchError(({ error }) => {
         this.snackBarService.showError(error?.message || error?.statusText);
@@ -87,13 +79,13 @@ export class CategoryService {
         return EMPTY;
       }),
       finalize(() =>
-        this._isLoadingSignal.update((isLoading) => (isLoading = false)),
+        this._isLoadingSignal.update(isLoading => (isLoading = false)),
       ),
     );
   }
 
   delete$(categoryId: string): Observable<CategoryDto> {
-    this._isLoadingSignal.update((isLoading) => (isLoading = true));
+    this._isLoadingSignal.update(isLoading => (isLoading = true));
     return this.confirmationService
       .open$({
         text: 'Are you sure you want to remove this category?',
@@ -104,7 +96,7 @@ export class CategoryService {
         filter((isConfirm: boolean) => isConfirm),
         switchMap(() => {
           return this.categoryApiService.delete$(categoryId).pipe(
-            switchMap((categoryDto) => {
+            switchMap(categoryDto => {
               if (this.snackBarService) {
                 this.snackBarService.showMessage(
                   'Category deleted successfully',
@@ -124,7 +116,7 @@ export class CategoryService {
           );
         }),
         finalize(() =>
-          this._isLoadingSignal.update((isLoading) => (isLoading = false)),
+          this._isLoadingSignal.update(isLoading => (isLoading = false)),
         ),
       );
   }

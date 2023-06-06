@@ -7,6 +7,8 @@
 # Only exists if Bazel was run
 /bazel-out
 
+.DS_Store
+
 # dependencies
 /node_modules
 
