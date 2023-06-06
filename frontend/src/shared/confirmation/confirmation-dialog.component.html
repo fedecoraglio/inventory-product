@@ -1,0 +1,22 @@
+<h3 class="text-3xl tracking-tight truncate mb-6" *ngIf="options.title">
+  {{ options.title }}
+</h3>
+<div mat-dialog-content>
+  {{ options.text }}
+</div>
+<div mat-dialog-actions class="mt-4 flex justify-end">
+  <button
+    mat-button
+    *ngIf="options.cancelButtonText"
+    (click)="handleResponse(false)"
+  >
+    {{ options.cancelButtonText }}
+  </button>
+  <button
+    mat-flat-button
+    [color]="options.confirmColor || 'primary'"
+    (click)="handleResponse(true)"
+  >
+    {{ options.confirmButtonText }}
+  </button>
+</div>

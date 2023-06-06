@@ -1,0 +1,12 @@
+@tailwind utilities;
+$color-accent: #1a2442;
+$color-primary: #3e9649;
+$color-text-weak: #73767e;
+$color-text-danger: #c62828;
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
