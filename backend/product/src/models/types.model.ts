@@ -19,7 +19,7 @@ export type ProductType = Readonly<{
   CommonDataType;
 
 export type CategoryType = Readonly<{
-  categoryId: string;
+  categoryId?: string;
   categoryParentIds?: string[];
 }> &
   CommonDataType;

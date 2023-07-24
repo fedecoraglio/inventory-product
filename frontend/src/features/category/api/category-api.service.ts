@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Params } from '@angular/router';
 
-import { CategoryDto, CategoryListDto } from '../types/category.types';
+import { CategoryDto, CategoryListDto, CategoryPaginationDto } from '../types/category.types';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +16,8 @@ export class CategoryApiService {
     return this.http.get<CategoryDto>(`${this.basePath}/${id}`);
   }
 
-  getAll$(): Observable<CategoryListDto> {
-    return this.http.get<CategoryListDto>(this.basePath);
+  getAll$(params: Params = null): Observable<CategoryListDto> {
+    return this.http.get<CategoryListDto>(this.basePath, { params });
   }
 
   save$(dto: CategoryDto): Observable<CategoryDto> {

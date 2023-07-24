@@ -7,7 +7,9 @@ const listCategory = async (_event, _context) => {
   const response = await new CategoryService().getAll(
     { query: _event?.queryStringParameters?.name ?? null },
     {
-      limit: _event?.queryStringParameters?.limit ?? DEFAULT_LIMIT_PAGINATION,
+      limit:
+        parseInt(_event?.queryStringParameters?.limit, 10) ??
+        DEFAULT_LIMIT_PAGINATION,
       lastEvaluatedKey: _event?.queryStringParameters?.lastEvaluatedKey ?? null,
     },
   );

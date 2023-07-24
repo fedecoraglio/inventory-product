@@ -22,16 +22,16 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { Subject, filter, switchMap, takeUntil, tap } from 'rxjs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 import { CategoryFormFields } from '../types/category-form-fields.enum';
 import { CategoryService } from '../services/category.service';
 import { ConfirmationModule } from '../../../shared/confirmation/confirmation.module';
 import { SnackBarModule } from '../../../shared/snack-bar/snack-bar.module';
 import { RoutePaths } from '../../../app.routes-path';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-category-form',
@@ -86,6 +86,12 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
 
+  get isFormValid(): boolean {
+    this.categoryFormGroup.markAllAsTouched();
+
+    return this.categoryFormGroup?.valid;
+  }
+
   private pathEditData() {
     if (this.categoryId) {
       this.categoryService
@@ -100,6 +106,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
   private handlerExecuteSave() {
     this.save$
       .pipe(
+        filter(() => this.isFormValid),
         switchMap(() => {
           const data = this.categoryFormGroup.getRawValue();
           if (this.categoryId) {

@@ -21,7 +21,7 @@ import { CategoryActionsComponent } from '../actions/category-actions.component'
   styleUrls: ['./category-list.component.scss'],
 })
 export class CategoryListComponent {
-  @Input('categories') categories = [];
+  @Input() categories = [];
 
   readonly displayedColumns: string[] = [
     'name',

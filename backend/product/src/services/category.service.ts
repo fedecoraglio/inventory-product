@@ -102,8 +102,8 @@ export class CategoryService {
       );
       return {
         count: categoryResp?.count || 0,
-        items: this.builder.transformModelsToDtos(categoryResp?.items) || [],
-        lastEvaluatedKey: categoryResp.lastEvaluatedKey,
+        items: this.builder.transformModelsToDtos(categoryResp?.items || []),
+        lastEvaluatedKey: categoryResp?.lastEvaluatedKey,
       };
     } catch (err) {
       console.error('CategoryService-getAll', err);
