@@ -68,8 +68,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
   readonly categoryFormFields = CategoryFormFields;
   readonly categoryFormGroup = new FormGroup({
     [CategoryFormFields.Name]: new FormControl('', Validators.required),
-    [CategoryFormFields.Content]: new FormControl(''),
-    [CategoryFormFields.Summary]: new FormControl(''),
+    [CategoryFormFields.Description]: new FormControl(''),
   });
   readonly isLoadingSignal = this.categoryService.isLoadingSignal;
 

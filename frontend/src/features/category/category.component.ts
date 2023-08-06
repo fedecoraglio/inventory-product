@@ -35,7 +35,6 @@ export class CategoryComponent implements OnInit, OnDestroy {
   readonly categoriesSignal = this.categoryService.categoriesSignal;
   // TODO: pagination is pending.
   readonly countSignal = this.categoryService.countSignal;
-  readonly lastEvaluatedKeySignal = this.categoryService.lastEvaluatedKeySignal;
   readonly isLoadingSignal = this.categoryService.isLoadingSignal
 
   ngOnInit() {

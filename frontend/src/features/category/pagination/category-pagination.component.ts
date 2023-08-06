@@ -10,7 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./category-pagination.component.scss'],
 })
 export class CategoryPaginationComponent {
-  @Input() lastEvaluatedKey?: string | null;
   @Input() btnName: string = 'Show more';
 
   @Output() showMoreClick = new EventEmitter<boolean>();

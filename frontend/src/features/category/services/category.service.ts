@@ -33,25 +33,19 @@ export class CategoryService {
   private readonly _categorySignal = signal<CategoryDto>(null);
   private readonly _countSignal = signal<number>(0);
   private readonly _isLoadingSignal = signal<boolean>(false);
-  private readonly _lastEvaluatedKeySignal = signal<string | null>(null);
   // Immutable signal
   readonly categoriesSignal = computed(() => this._categoriesSignal() ?? []);
   readonly categorySignal = computed(() => this._categorySignal() ?? null);
   readonly countSignal = computed(() => this._countSignal());
   readonly isLoadingSignal = computed(() => this._isLoadingSignal());
-  readonly lastEvaluatedKeySignal = computed(() =>
-    this._lastEvaluatedKeySignal(),
-  );
 
   getAll$(appendData = false): Observable<CategoryListDto> {
     this._isLoadingSignal.set(true);
     let param: CategoryPaginationDto = { limit: 10 };
-    if (this._lastEvaluatedKeySignal()) {
-      param.lastEvaluatedKey = this._lastEvaluatedKeySignal();
-    }
+
     return this.categoryApiService.getAll$(param).pipe(
       take(1),
-      tap(({ items, count, lastEvaluatedKey }) => {
+      tap(({ items, count }) => {
         if (appendData) {
           const currentItems = this._categoriesSignal();
           currentItems.push(...items);
@@ -61,7 +55,6 @@ export class CategoryService {
         }
 
         this._countSignal.set(count);
-        this._lastEvaluatedKeySignal.set(lastEvaluatedKey || null);
       }),
       finalize(() => {
         this._isLoadingSignal.set(false);

@@ -65,7 +65,7 @@ export class CategoryActionsComponent {
   constructor() {
     this.deleteCategoryAction$
       .pipe(
-        switchMap(() => this.categoryService.delete$(this.category.categoryId)),
+        switchMap(() => this.categoryService.delete$(this.category.id)),
         takeUntilDestroyed(),
       )
       .subscribe(() => {
@@ -75,13 +75,13 @@ export class CategoryActionsComponent {
     this.changeCategoryAction$
       .pipe(
         switchMap(() =>
-          this.categoryService.getById$(this.category.categoryId),
+          this.categoryService.getById$(this.category.id),
         ),
         takeUntilDestroyed(),
       )
       .subscribe(() => {
         this.route.navigate([
-          `/${RoutePaths.Categories}/${this.category.categoryId}`,
+          `/${RoutePaths.Categories}/${this.category.id}`,
         ]);
       });
   }

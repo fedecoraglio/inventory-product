@@ -75,8 +75,7 @@
               "browserTarget": "inventory-frontend:build:production"
             },
             "development": {
-              "browserTarget": "inventory-frontend:build:development",
-              "proxyConfig": "src/proxy.conf.js"
+              "browserTarget": "inventory-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

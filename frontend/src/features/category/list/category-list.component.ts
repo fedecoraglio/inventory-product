@@ -25,8 +25,7 @@ export class CategoryListComponent {
 
   readonly displayedColumns: string[] = [
     'name',
-    'content',
-    'summary',
+    'description',
     'actions',
   ];
 }

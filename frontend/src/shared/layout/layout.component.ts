@@ -15,7 +15,6 @@ import { ConfirmationModule } from '../confirmation/confirmation.module';
 import { HeaderComponent } from './header/header.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 
-
 @Component({
   selector: 'app-layout',
   standalone: true,
