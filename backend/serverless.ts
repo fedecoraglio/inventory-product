@@ -20,7 +20,7 @@ import categoryUpdate from '@functions/categories/update';
 import categoryDelete from '@functions/categories/delete';
 
 const serverlessConfiguration: AWS = {
-  service: 'inventory-product',
+  service: 'inventory-product-backend',
   frameworkVersion: '3',
   disabledDeprecations: ['CLI_OPTIONS_SCHEMA'],
   plugins: [

@@ -1,5 +1,5 @@
 {
-  "name": "product-category",
+  "name": "inventory-product-backend",
   "version": "1.0.0",
   "description": "Serverless products and categories service api",
   "main": "serverless.ts",
