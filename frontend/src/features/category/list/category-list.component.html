@@ -1,4 +1,4 @@
-<div class="flex flex-col">
+<div class="mat-elevation-z8">
   <div class="w-full">
     <mat-form-field class="w-full">
       <mat-label>Filter</mat-label>
@@ -10,7 +10,7 @@
       />
     </mat-form-field>
   </div>
-  <table mat-table [dataSource]="dataSource" class="tbl rounded-lg">
+  <table mat-table [dataSource]="dataSource" class="w-full tbl rounded-lg">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
       <td mat-cell *matCellDef="let category" [title]="category.name">
@@ -47,4 +47,10 @@
       </td>
     </tr>
   </table>
+    <mat-paginator
+    #paginator
+    [pageSizeOptions]="[20, 50, 200]"
+    aria-label="Select page"
+  >
+  </mat-paginator>
 </div>
