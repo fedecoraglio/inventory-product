@@ -40,7 +40,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.listProducts$
       .pipe(
-        switchMap(showMore => this.productService.getAll$(showMore)),
+        switchMap(showMore => this.productService.getAll$()),
         takeUntil(this.onDestroy$),
       )
       .subscribe();
@@ -57,6 +57,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   showMoreItem(showMore: boolean) {
-    this.listProducts$.next(showMore);
+    //this.listProducts$.next(showMore);
   }
 }

@@ -15,5 +15,7 @@ export type ProductDto = Partial<{
 }>;
 
 export type ProductPaginationDto = {
-  limit: number;
+  query?: string | null,
+  page: number;
+  pageSize: number;
 };

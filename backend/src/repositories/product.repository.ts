@@ -2,6 +2,7 @@ import { PrismaClient, Product } from '@prisma/client';
 
 import { ProductDto } from '@dtos/product.dtos';
 import {
+  DEFAULT_LIMIT_PAGINATION,
   ListItem,
   PaginationItem,
   SimpleSearchParam,
@@ -119,18 +120,15 @@ export class ProductRepository {
   ): Promise<ListItem<Product>> {
     const prisma = new PrismaClient({});
     try {
+      const baseQuery = this.createBaseQuery(pagination);
+      const whereQuery = this.createWhereQuery(searchParam);
+      baseQuery['where'] = whereQuery ? { ...whereQuery.where }: {};
+
       const [items, count] = await Promise.all([
-        prisma.product.findMany({select: {
-          id: true,
-          name: true,
-          description: true,
-          brandId: true,
-          brand: true,
-          createdAt: true,
-          metaData:true,
-          categoryIds: true
-        }}),
-        prisma.product.count(),
+        prisma.product.findMany({
+          ...baseQuery,
+        }),
+        prisma.product.count({ ...whereQuery }),
       ]);
       return { items, count };
     } catch (err) {
@@ -139,6 +137,53 @@ export class ProductRepository {
     } finally {
       await prisma.$disconnect();
     }
+  }
+
+  private createBaseQuery(pagination: PaginationItem = null) {
+    const page = pagination?.page ? parseInt(pagination?.page, 10) : 0;
+    const take = pagination?.pageSize
+      ? parseInt(pagination?.pageSize, 10)
+      : DEFAULT_LIMIT_PAGINATION;
+
+    return {
+      skip: (isNaN(page) ? 0 : page - 1) * take,
+      take: take,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        brandId: true,
+        brand: true,
+        createdAt: true,
+        metaData: true,
+        categoryIds: true,
+      },
+    };
+  }
+
+  private createWhereQuery(searchParam: SimpleSearchParam | null = null) {
+    let whereQuery = null;
+    if (searchParam?.query) {
+      whereQuery = {
+        where: {
+          OR: [
+            {
+              brand: {
+                name: {
+                  contains: searchParam.query.toLowerCase(),
+                },
+              },
+            },
+            {
+              name: {
+                contains: searchParam.query.toLowerCase(),
+              },
+            },
+          ],
+        },
+      };
+    }
+    return whereQuery;
   }
 
   private async connectCategoriesProduct(

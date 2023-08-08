@@ -18,7 +18,8 @@ export class ProductApiService {
   }
 
   getAll$(params: Params = null): Observable<ProductListDto> {
-    return this.http.get<ProductListDto>(this.basePath);
+    console.log("params", params)
+    return this.http.get<ProductListDto>(this.basePath, { params });
   }
 
   save$(dto: ProductDto): Observable<ProductDto> {

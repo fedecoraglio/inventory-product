@@ -4,11 +4,12 @@ export type ListItem<T> = {
 };
 
 export type PaginationItem = {
-  limit?: number | null;
+  pageSize?: string | null;
+  page?: string | null;
 };
 
 export type SimpleSearchParam = {
   query: string;
 };
 
-export const DEFAULT_LIMIT_PAGINATION = 10;
+export const DEFAULT_LIMIT_PAGINATION = 40;

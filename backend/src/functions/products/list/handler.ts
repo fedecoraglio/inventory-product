@@ -5,9 +5,12 @@ import { DEFAULT_LIMIT_PAGINATION } from '@dtos/list-item.dto';
 const listProduct = async (_event, _context) => {
   console.log(`Getting products`);
   const response = await new ProductService().getAll(
-    { query: _event?.queryStringParameters?.name ?? null },
+    { query: _event?.queryStringParameters?.query ?? null },
     {
-      limit: _event?.queryStringParameters?.limit ?? DEFAULT_LIMIT_PAGINATION,
+      pageSize:
+        _event?.queryStringParameters?.pageSize ?? DEFAULT_LIMIT_PAGINATION,
+      page:
+        _event?.queryStringParameters?.page ?? 1,
     },
   );
   console.log(`Leaving products`);

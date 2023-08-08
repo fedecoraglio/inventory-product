@@ -1,4 +1,13 @@
 <div class="mat-elevation-z8">
+    <div class="w-full">
+    <mat-form-field class="w-full">
+      <input
+        matInput
+        [formControl]="searchInputControl"
+        [autocomplete]="'off'"
+      />
+    </mat-form-field>
+  </div>
   <div class="w-full">
     <table mat-table [dataSource]="dataSource" class="tbl rounded-lg">
       <ng-container matColumnDef="name">
@@ -45,7 +54,8 @@
     </table>
     <mat-paginator
       #paginator
-      [pageSizeOptions]="[20, 50, 200]"
+      [length]="countSignal()"
+      [pageSizeOptions]="pageSizeOptions"
       aria-label="Select page"
     >
     </mat-paginator>

@@ -21,6 +21,7 @@ import { ProductDto, ProductListDto, ProductPaginationDto } from '../types/produ
   providedIn: 'root',
 })
 export class ProductService {
+  static DEFAULT_PRODUCT_LIMIT = 40;
   private readonly productApiService = inject(ProductApiService);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly snackBarService = inject(SnackBarService);
@@ -35,21 +36,17 @@ export class ProductService {
   readonly countSignal = computed(() => this._countSignal());
   readonly isLoadingSignal = computed(() => this._isLoadingSignal());
 
-  getAll$(appendData = false): Observable<ProductListDto> {
+  getAll$(
+    pagination: ProductPaginationDto = {
+      page: 1,
+      pageSize: ProductService.DEFAULT_PRODUCT_LIMIT,
+    },
+  ): Observable<ProductListDto> {
     this._isLoadingSignal.set(true);
-    let param: ProductPaginationDto = { limit: 10 };
-
-    return this.productApiService.getAll$(param).pipe(
+    return this.productApiService.getAll$(pagination).pipe(
       take(1),
       tap(({ items, count }) => {
-        if (appendData) {
-          const currentItems = this._productsSignal();
-          currentItems.push(...items);
-          this._productsSignal.set(currentItems);
-        } else {
-          this._productsSignal.set(items);
-        }
-
+        this._productsSignal.set(items);
         this._countSignal.set(count);
       }),
       finalize(() => {
