@@ -15,6 +15,7 @@ export class ConfirmationService {
       .open(ConfirmationDialogComponent, {
         data: options,
       })
-      .afterClosed();
+      .afterClosed()
+
   }
 }

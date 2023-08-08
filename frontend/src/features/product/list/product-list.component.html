@@ -1,0 +1,43 @@
+<table mat-table [dataSource]="products" class="tbl rounded-lg">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let product" [title]="product.name">
+      {{ product.name }}
+    </td>
+  </ng-container>
+    <ng-container matColumnDef="brand">
+    <th mat-header-cell *matHeaderCellDef>Brand</th>
+    <td mat-cell *matCellDef="let product" [title]="product.brand?.name">
+      {{ product.brand?.name }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="description">
+    <th mat-header-cell *matHeaderCellDef>Description</th>
+    <td mat-cell *matCellDef="let product" [title]="product.description">
+      {{ product.description }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="createdAt">
+    <th mat-header-cell *matHeaderCellDef>Created At</th>
+    <td mat-cell *matCellDef="let product" [title]="product.createdAt">
+      {{ product.createdAt | date: 'dd/MM/yyyy' }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef class="actions"></th>
+    <td mat-cell *matCellDef="let product" class="actions">
+      <app-product-actions [product]="product"></app-product-actions>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  <tr class="mat-row text-center" *matNoDataRow >
+    <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+      There are not products
+    </td>
+  </tr>
+</table>

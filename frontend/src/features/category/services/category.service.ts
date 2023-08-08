@@ -4,6 +4,7 @@ import {
   catchError,
   filter,
   finalize,
+  map,
   of,
   switchMap,
   take,
@@ -97,7 +98,6 @@ export class CategoryService {
   }
 
   delete$(categoryId: string): Observable<CategoryDto> {
-    this._isLoadingSignal.update(isLoading => (isLoading = true));
     return this.confirmationService
       .open$({
         text: 'Are you sure you want to remove this category?',
@@ -108,13 +108,16 @@ export class CategoryService {
         filter((isConfirm: boolean) => isConfirm),
         switchMap(() => {
           return this.categoryApiService.delete$(categoryId).pipe(
-            switchMap(categoryDto => {
+            map(dto => {
               if (this.snackBarService) {
                 this.snackBarService.showMessage(
                   'Category deleted successfully',
                 );
               }
-              return this.getAll$().pipe(switchMap(() => of(categoryDto)));
+              this._categoriesSignal.update(items =>
+                items.filter(item => item.id !== dto.id),
+              );
+              return dto;
             }),
             catchError((e: HttpErrorResponse) => {
               if (this.snackBarService) {
@@ -127,7 +130,6 @@ export class CategoryService {
             }),
           );
         }),
-        finalize(() => this._isLoadingSignal.set(false)),
       );
   }
 }

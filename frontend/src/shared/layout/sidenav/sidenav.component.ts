@@ -37,6 +37,18 @@ export class SidenavComponent {
       icon: 'account_circle',
       text: 'Categories',
     },
+    {
+      order: 3,
+      link: RoutePaths.Products,
+      icon: 'account_circle',
+      text: 'Products',
+    },
+    {
+      order: 4,
+      link: RoutePaths.Brands,
+      icon: 'account_circle',
+      text: 'Brands',
+    },
   ];
   constructor() {}
 

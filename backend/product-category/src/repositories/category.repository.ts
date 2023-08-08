@@ -1,7 +1,6 @@
 import { PrismaClient, Category } from '@prisma/client';
 
 import {
-  DEFAULT_LIMIT_PAGINATION,
   ListItem,
   PaginationItem,
   SimpleSearchParam,
@@ -103,12 +102,8 @@ export class CategoryRepository {
   ): Promise<ListItem<Category>> {
     const prisma = new PrismaClient({});
     try {
-      const query = {
-        skip: 0,
-        take: pagination?.limit ?? DEFAULT_LIMIT_PAGINATION,
-      };
       const [items, count] = await Promise.all([
-        prisma.category.findMany(query),
+        prisma.category.findMany(),
         prisma.category.count(),
       ]);
       return { items, count };

@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-category-pagination',
+  selector: 'app-pagination',
   standalone: true,
   imports: [CommonModule, MatButtonModule],
-  templateUrl: './category-pagination.component.html',
-  styleUrls: ['./category-pagination.component.scss'],
+  templateUrl: './pagination.component.html',
+  styleUrls: ['./pagination.component.scss'],
 })
-export class CategoryPaginationComponent {
+export class PaginationComponent {
   @Input() btnName: string = 'Show more';
 
   @Output() showMoreClick = new EventEmitter<boolean>();

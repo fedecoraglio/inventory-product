@@ -1,3 +1,5 @@
+import { Category } from '@prisma/client';
+
 import { AppError } from '@libs/app-error';
 import {
   ListItem,
@@ -6,13 +8,11 @@ import {
 } from '@dtos/list-item.dto';
 import { CategoryDto } from '@dtos/category.dtos';
 import { CategoryRepository } from '@repositories/category.repository';
-import { CategoryBuilder } from '@builders/category-builder';
 
 export class CategoryService {
   private readonly repository = new CategoryRepository();
-  private readonly builder = CategoryBuilder.instance;
 
-  async create(dto: CategoryDto): Promise<CategoryDto> {
+  async create(dto: CategoryDto): Promise<Category> {
     try {
       const validate = await this.repository.getByName(dto.name.toLowerCase());
       if (validate) {
@@ -20,16 +20,14 @@ export class CategoryService {
           message: `${dto.name} category is duplicated. Category name must be unique`,
         };
       }
-      return this.builder.transformModelToDto(
-        await this.repository.create(dto),
-      );
+      return await this.repository.create(dto);
     } catch (err) {
       console.error('CategoryService', err);
       throw new AppError(err.message ?? 'Error creating category');
     }
   }
 
-  async update(dto: CategoryDto, id: string): Promise<CategoryDto> {
+  async update(dto: CategoryDto, id: string): Promise<Category> {
     try {
       const validate = await this.repository.getById(id);
       if (validate) {
@@ -40,9 +38,7 @@ export class CategoryService {
           };
         }
 
-        return this.builder.transformModelToDto(
-          await this.repository.update(dto, id),
-        );
+        return await this.repository.update(dto, id);
       } else {
         throw { message: `The category ${id} id does not exits` };
       }
@@ -52,10 +48,9 @@ export class CategoryService {
     }
   }
 
-  async getById(id: string): Promise<CategoryDto> {
+  async getById(id: string): Promise<Category> {
     try {
-      const model = await this.repository.getById(id);
-      const category = this.builder.transformModelToDto(model);
+      const category = await this.repository.getById(id);
       if (!category) {
         throw new AppError('Category does not exists', 404);
       }
@@ -68,7 +63,7 @@ export class CategoryService {
 
   async delete(id: string): Promise<CategoryDto> {
     try {
-      return this.builder.transformModelToDto(await this.repository.delete(id));
+      return await this.repository.delete(id);
     } catch (err) {
       console.error(err);
       throw new AppError(
@@ -82,11 +77,7 @@ export class CategoryService {
     pagination: PaginationItem = null,
   ): Promise<ListItem<CategoryDto>> {
     try {
-      const resp = await this.repository.getAll(searchParam, pagination);
-      return {
-        count: resp.count,
-        items: this.builder.transformModelsToDtos(resp.items),
-      };
+      return await this.repository.getAll(searchParam, pagination);
     } catch (err) {
       console.error(err);
       throw new AppError('Error getting category');

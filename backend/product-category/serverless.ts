@@ -1,17 +1,23 @@
 import type { AWS } from '@serverless/typescript';
 
+// Brands
+import brandCreate from '@functions/brands/create';
+import brandList from '@functions/brands/list';
+import brandDetail from '@functions/brands/detail';
+import brandUpdate from '@functions/brands/update';
+import brandDelete from '@functions/brands/delete';
 // Products
-import createProduct from '@functions/products/create';
-import listProduct from '@functions/products/list';
-import detailProduct from '@functions/products/detail';
-import updateProduct from '@functions/products/update';
-import deleteProduct from '@functions/products/delete';
+import productCreate from '@functions/products/create';
+import productList from '@functions/products/list';
+import productDetail from '@functions/products/detail';
+import productUpdate from '@functions/products/update';
+import productDelete from '@functions/products/delete';
 // Categories
-import createCategory from '@functions/categories/create';
-import listCategory from '@functions/categories/list';
-import detailCategory from '@functions/categories/detail';
-import updateCategory from '@functions/categories/update';
-import deleteCategory from '@functions/categories/delete';
+import categoryCreate from '@functions/categories/create';
+import categoryList from '@functions/categories/list';
+import categoryDetail from '@functions/categories/detail';
+import categoryUpdate from '@functions/categories/update';
+import categoryDelete from '@functions/categories/delete';
 
 const serverlessConfiguration: AWS = {
   service: 'inventory-product',
@@ -41,16 +47,21 @@ const serverlessConfiguration: AWS = {
 
   // import the function via paths
   functions: {
-    createProduct,
-    listProduct,
-    detailProduct,
-    updateProduct,
-    deleteProduct,
-    createCategory,
-    listCategory,
-    detailCategory,
-    updateCategory,
-    deleteCategory,
+    brandCreate,
+    brandList,
+    brandDetail,
+    brandUpdate,
+    brandDelete,
+    productCreate,
+    productList,
+    productDetail,
+    productUpdate,
+    productDelete,
+    categoryCreate,
+    categoryList,
+    categoryDetail,
+    categoryUpdate,
+    categoryDelete,
   },
   package: { individually: true },
   custom: {

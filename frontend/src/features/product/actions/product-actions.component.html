@@ -1,0 +1,10 @@
+<button
+  *ngFor="let action of action$ | async"
+  mat-button
+  color="primary"
+  [disableRipple]="true"
+  [disabled]="action.disabled || isLoadingSignal()"
+  (click)="action.handler()"
+>
+  <span class="material-icons">{{ action.icon }}</span>
+</button>

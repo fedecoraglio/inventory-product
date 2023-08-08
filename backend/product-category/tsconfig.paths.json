@@ -5,11 +5,8 @@
       "@functions/*": ["src/functions/*"],
       "@services/*": ["src/services/*"],
       "@repositories/*": ["src/repositories/*"],
-      "@models/*": ["src/models/*"],
       "@dtos/*": ["src/dtos/*"],
       "@libs/*": ["src/libs/*"],
-      "@builders/*": ["src/builders/*"],
-      "@utils/*": ["src/utils/*"]
     }
   }
 }

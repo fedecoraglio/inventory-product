@@ -1,4 +1,6 @@
 export enum RoutePaths {
   Home = 'home',
-  Categories = 'categories'
+  Categories = 'categories',
+  Products = 'products',
+  Brands = 'brands'
 }

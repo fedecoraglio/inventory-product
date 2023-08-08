@@ -9,9 +9,4 @@
   <ng-container *ngIf="!isLoadingSignal()">
     <app-category-list [categories]="categoriesSignal()"></app-category-list>
   </ng-container>
-  <div class="flex justify-end">
-    <app-category-pagination
-      (showMoreClick)="showCategories($event)"
-    ></app-category-pagination>
-  </div>
 </div>

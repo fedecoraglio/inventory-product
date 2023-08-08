@@ -1,0 +1,33 @@
+<mat-form-field class="w-full">
+  <mat-label>Search Categories</mat-label>
+  <input
+    matInput
+    type="text"
+    placeholder="Write value"
+    aria-label="Search Categories"
+    [matAutocomplete]="auto"
+    [formControl]="fieldControl"
+  />
+  <mat-autocomplete
+    #auto="matAutocomplete"
+    (optionSelected)="optionSelected($event)"
+  >
+    <mat-option
+      *ngFor="let option of filteredOptions | async"
+      [value]="option.name"
+      [id]="option.id"
+    >
+      {{ option.name }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+<mat-chip-listbox aria-label="Fish selection">
+  <mat-chip
+    *ngFor="let item of itemsSelected | keyvalue"
+    [removable]="true"
+    (removed)="onRemoveItem(item.key)"
+  >
+    {{ item.value }}
+    <mat-icon matChipRemove>cancel</mat-icon>
+  </mat-chip>
+</mat-chip-listbox>

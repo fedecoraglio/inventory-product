@@ -28,6 +28,20 @@ export const routes: Routes = [
             ({ categoryRoutes }) => categoryRoutes,
           ),
       },
+      {
+        path: RoutePaths.Products,
+        loadChildren: () =>
+          import('./features/product/product.routes').then(
+            ({ productRoutes }) => productRoutes,
+          ),
+      },
+      {
+        path: RoutePaths.Brands,
+        loadChildren: () =>
+          import('./features/brand/brand.routes').then(
+            ({ brandRoutes }) => brandRoutes,
+          ),
+      },
     ],
   },
 ];

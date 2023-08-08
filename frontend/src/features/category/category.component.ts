@@ -8,8 +8,6 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 import { CategoryService } from './services/category.service';
 import { CategoryListComponent } from './list/category-list.component';
 import { RoutePaths } from '../../app.routes-path';
-import { CategoryPaginationComponent } from './pagination/category-pagination.component';
-import { CategoryPaginationDto } from './types/category.types';
 
 @Component({
   selector: 'app-category',
@@ -17,7 +15,6 @@ import { CategoryPaginationDto } from './types/category.types';
   imports: [
     CommonModule,
     CategoryListComponent,
-    CategoryPaginationComponent,
     RouterModule,
     MatTooltipModule,
     MatButtonModule,

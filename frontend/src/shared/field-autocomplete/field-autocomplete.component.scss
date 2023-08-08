@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.email-list-input {
+  width: 100%;
+}
+
+.chips-container {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.content {
+  @apply overflow-hidden mt-6;
+}

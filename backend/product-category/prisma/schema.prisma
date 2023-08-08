@@ -11,30 +11,43 @@ datasource db {
 }
 
 type MetaData {
-  key String
+  key     String
   content String
 }
 
-model Product {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
+model Brand {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
   description String
-  categoryIDs String[] @db.ObjectId
-  categories  Category[] @relation(fields: [categoryIDs], references: [id])
-  metaData MetaData[]
-  createdAt DateTime
+  product     Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map(name: "brands")
+}
+
+model Product {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String     @unique
+  description String
+  categoryIds String[]   @db.ObjectId
+  categories  Category[] @relation(fields: [categoryIds], references: [id])
+  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  brandId     String     @db.ObjectId
+  metaData    MetaData[]
+  createdAt   DateTime
 
   @@map(name: "products")
 }
 
 model Category {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
   description String
-  productIDs String[] @db.ObjectId
-  product   Product[] @relation(fields: [productIDs], references: [id])
-  createdAt DateTime
-  isActive Boolean @default(true)
+  productIds  String[]  @db.ObjectId
+  products    Product[] @relation(fields: [productIds], references: [id])
+  createdAt   DateTime  @default(now())
+  isActive    Boolean   @default(true)
 
   @@map(name: "categories")
 }
