@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { RoutePaths } from '../../../app.routes-path';
 import { MatDividerModule } from '@angular/material/divider';
@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatListModule } from '@angular/material/list';
 import { NgFor } from '@angular/common';
+import { NavigationService } from '../../services/navigation.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -18,39 +19,12 @@ import { NgFor } from '@angular/common';
     MatTreeModule,
     MatDividerModule,
     MatListModule,
-    NgFor
+    NgFor,
   ],
 })
 export class SidenavComponent {
-  roles: any[];
-  roleSelectedId: number;
-  navList: any[] = [
-    {
-      order: 1,
-      link: RoutePaths.Home,
-      icon: 'supervised_user_circle',
-      text: 'Home',
-    },
-    {
-      order: 2,
-      link: RoutePaths.Categories,
-      icon: 'account_circle',
-      text: 'Categories',
-    },
-    {
-      order: 3,
-      link: RoutePaths.Products,
-      icon: 'account_circle',
-      text: 'Products',
-    },
-    {
-      order: 4,
-      link: RoutePaths.Brands,
-      icon: 'account_circle',
-      text: 'Brands',
-    },
-  ];
-  constructor() {}
+  private readonly navigationService = inject(NavigationService);
+  readonly navigationItemsSignal = this.navigationService.navigationItemsSignal;
 
   logout() {}
 }

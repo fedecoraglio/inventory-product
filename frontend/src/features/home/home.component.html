@@ -1,1 +1,9 @@
-<div>Show categories</div>
+<div class="flex flex-wrap gap-4 w-110">
+  <ng-container *ngFor="let item of navigationItemsSignal()">
+    <app-home-product-card
+      (click)="gotToPage(item.link)"
+      [productIcon]="item.icon"
+      [productTitle]="item.text"
+    ></app-home-product-card>
+  </ng-container>
+</div>
