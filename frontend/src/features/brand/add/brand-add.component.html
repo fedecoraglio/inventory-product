@@ -1,0 +1,22 @@
+<div mat-dialog-title class="font-normal">
+  <h3 class="text-3xl tracking-tight truncate">
+    {{ 'New Brand' }}
+  </h3>
+</div>
+<div mat-dialog-content class="flex flex-col">
+  <app-brand-form #brandForm></app-brand-form>
+</div>
+<div mat-dialog-actions align="center">
+  <button mat-flat-button mat-dialog-close color="accent" (click)="cancel()">
+    Cancel
+  </button>
+  <button
+    mat-flat-button
+    cdkFocusInitial
+    color="primary"
+    (click)="save$.next()"
+  >
+    Continue
+  </button>
+</div>
+<!--[class.btn-loading-spinner]="isLoadingSignal()"-->

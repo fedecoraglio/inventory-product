@@ -91,7 +91,13 @@ export class BrandRepository {
     const prisma = new PrismaClient({});
     try {
       const [items, count] = await Promise.all([
-        prisma.brand.findMany(),
+        prisma.brand.findMany({
+          orderBy: [
+            {
+              createdAt: 'desc',
+            },
+          ],
+        }),
         prisma.brand.count(),
       ]);
       return { items, count };

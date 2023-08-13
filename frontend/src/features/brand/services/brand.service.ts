@@ -16,6 +16,7 @@ import { ConfirmationService } from '@shared/confirmation/confirmation.service';
 import { SnackBarService } from '@shared/snack-bar/snack-bar.service';
 import { BrandApiService } from '@features/brand/api/brand-api.service';
 import { BrandDto, BrandListDto } from '@features/brand/types/brand.types';
+import { LoadingService } from '@shared/services/loading.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,20 +24,19 @@ import { BrandDto, BrandListDto } from '@features/brand/types/brand.types';
 export class BrandService {
   private readonly brandApiService = inject(BrandApiService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly loadingService = inject(LoadingService);
   private readonly snackBarService = inject(SnackBarService);
   // WritableSignal
   private readonly _brandsSignal = signal<BrandDto[]>([]);
   private readonly _brandSignal = signal<BrandDto>(null);
   private readonly _countSignal = signal<number>(0);
-  private readonly _isLoadingSignal = signal<boolean>(false);
   // Immutable signal
   readonly brandsSignal = computed(() => this._brandsSignal() ?? []);
   readonly brandSignal = computed(() => this._brandSignal() ?? null);
   readonly countSignal = computed(() => this._countSignal());
-  readonly isLoadingSignal = computed(() => this._isLoadingSignal());
 
   getAll$(): Observable<BrandListDto> {
-    this._isLoadingSignal.set(true);
+    this.loadingService.showProcessBar();
 
     return this.brandApiService.getAll$().pipe(
       take(1),
@@ -44,8 +44,12 @@ export class BrandService {
         this._brandsSignal.set(items);
         this._countSignal.set(count);
       }),
+      catchError(() => {
+        this.loadingService.hideProcessBar();
+        return EMPTY;
+      }),
       finalize(() => {
-        this._isLoadingSignal.set(false);
+        this.loadingService.hideProcessBar();
       }),
     );
   }
@@ -55,32 +59,42 @@ export class BrandService {
       tap(brand => {
         this._brandSignal.set(brand);
       }),
+      catchError(() => {
+        this.loadingService.hideProcessBar();
+        return EMPTY;
+      }),
     );
   }
 
   save$(dto: BrandDto): Observable<BrandDto> {
-    this._isLoadingSignal.set(true);
     return this.brandApiService.save$(dto).pipe(
+      take(1),
+      map(newBrand => {
+        this._brandsSignal.mutate(items => items.unshift(newBrand));
+        return newBrand;
+      }),
       catchError(({ error }) => {
         this.snackBarService.showError(error?.message || error?.statusText);
-
+        this.loadingService.hideProcessBar();
         return EMPTY;
       }),
-      finalize(() => this._isLoadingSignal.set(false)),
     );
   }
 
   update$(id: string, dto: BrandDto): Observable<BrandDto> {
-    this._isLoadingSignal.update(isLoading => (isLoading = true));
     return this.brandApiService.update$(id, dto).pipe(
+      take(1),
+      map(editBrand => {
+        this._brandsSignal.update(items =>
+          items.map(item => (item.id === id ? { ...editBrand } : item)),
+        );
+        return editBrand;
+      }),
       catchError(({ error }) => {
         this.snackBarService.showError(error?.message || error?.statusText);
-
+        this.loadingService.hideProcessBar();
         return EMPTY;
       }),
-      finalize(() =>
-        this._isLoadingSignal.update(isLoading => (isLoading = false)),
-      ),
     );
   }
 
@@ -110,7 +124,7 @@ export class BrandService {
                   `${e.error?.message ?? 'Error deleting brand'} `,
                 );
               }
-
+              this.loadingService.hideProcessBar();
               return EMPTY;
             }),
           );

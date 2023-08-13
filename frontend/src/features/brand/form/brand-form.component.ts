@@ -1,17 +1,11 @@
 import {
+  AfterViewInit,
   Component,
   Input,
   OnDestroy,
   OnInit,
-  computed,
-  inject,
 } from '@angular/core';
-import {
-  CommonModule,
-  NgFor,
-  NgIf,
-  Location,
-} from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import {
   FormControl,
   FormGroup,
@@ -21,17 +15,19 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { Subject, filter, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  ReplaySubject,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-
 
 import { ConfirmationModule } from '@shared/confirmation/confirmation.module';
 import { SnackBarModule } from '@shared/snack-bar/snack-bar.module';
-import { BrandService } from '@features/brand/services/brand.service';
 import { BrandFormFields } from '@features/brand/types/brand-form-fields.enum';
-import { RoutePaths } from '../../../app.routes-path';
+import { BrandDto } from '../types/brand.types';
 
 @Component({
   selector: 'app-brand-form',
@@ -49,34 +45,24 @@ import { RoutePaths } from '../../../app.routes-path';
     ConfirmationModule,
     SnackBarModule,
   ],
-  providers: [BrandService],
+  providers: [],
   templateUrl: './brand-form.component.html',
   styleUrls: ['./brand-form.component.scss'],
 })
-export class BrandFormComponent implements OnInit, OnDestroy {
-  private readonly brandService = inject(BrandService);
-  private readonly route = inject(Router);
+export class BrandFormComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly onDestroy$ = new Subject<void>();
-  private readonly pathEditFieldValue = computed(() => {
-    const brand = this.brandService.brandSignal();
-    this.formGroup.patchValue({
-      ...brand,
-    });
-  });
-  readonly location = inject(Location);
   readonly save$ = new Subject<void>();
   readonly brandFormFields = BrandFormFields;
   readonly formGroup = new FormGroup({
     [BrandFormFields.Name]: new FormControl('', Validators.required),
     [BrandFormFields.Description]: new FormControl(''),
   });
-  readonly isLoadingSignal = this.brandService.isLoadingSignal;
-
-  // Mapping from routing
-  @Input() brandId?: string;
+  readonly brandData$ = new ReplaySubject<BrandDto>(1);
+  @Input() set brandData(brandData: BrandDto) {
+    this.brandData$.next(brandData);
+  }
 
   ngOnInit() {
-    this.handlerExecuteSave();
     this.pathEditData();
   }
 
@@ -85,39 +71,28 @@ export class BrandFormComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
 
-  get isFormValid(): boolean {
+  ngAfterViewInit() {
+    this.brandData$.pipe(takeUntil(this.onDestroy$)).subscribe(brandDto => {
+      this.formGroup.patchValue(brandDto);
+      this.formGroup.updateValueAndValidity();
+    });
+  }
+
+  get isValid(): boolean {
     this.formGroup.markAllAsTouched();
 
     return this.formGroup?.valid;
   }
 
-  private pathEditData() {
-    if (this.brandId) {
-      this.brandService
-        .getById$(this.brandId)
-        .pipe(takeUntil(this.onDestroy$))
-        .subscribe(() => {
-          this.pathEditFieldValue();
-        });
-    }
+  get value(): BrandDto {
+    return this.formGroup.getRawValue() as BrandDto;
   }
 
-  private handlerExecuteSave() {
-    this.save$
-      .pipe(
-        filter(() => this.isFormValid),
-        switchMap(() => {
-          const data = this.formGroup.getRawValue();
-          if (this.brandId) {
-            return this.brandService.update$(this.brandId, data);
-          } else {
-            return this.brandService.save$(data);
-          }
-        }),
-        takeUntil(this.onDestroy$),
-      )
-      .subscribe(() => {
-        this.route.navigate([`/${RoutePaths.Brands}`]);
+  private pathEditData() {
+    if (this.brandData) {
+      this.formGroup.patchValue({
+        ...this.brandData,
       });
+    }
   }
 }

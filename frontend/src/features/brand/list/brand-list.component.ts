@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,6 +28,7 @@ import { BrandDto } from '@features/brand/types/brand.types';
     MatFormFieldModule,
     MatInputModule,
     MatPaginatorModule,
+    MatSortModule,
     BrandActionsComponent,
   ],
   templateUrl: './brand-list.component.html',
@@ -36,6 +37,7 @@ import { BrandDto } from '@features/brand/types/brand.types';
 export class BrandListComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<BrandDto>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   @Input() set brands(brands: BrandDto[]) {
     this.dataSource = new MatTableDataSource(brands);
   }
@@ -49,6 +51,7 @@ export class BrandListComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   applyFilter(event: Event) {

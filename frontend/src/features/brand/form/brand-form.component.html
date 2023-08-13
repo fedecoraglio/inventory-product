@@ -1,5 +1,4 @@
-<div class="flex flex-col">
-  <h2>{{ brandId ? 'Edit Brand' : 'New Brand' }}</h2>
+<div mat-dialog-content class="flex flex-col">
   <form [formGroup]="formGroup">
     <div class="mt-3">
       <mat-form-field class="w-full">
@@ -23,30 +22,6 @@
           [spellcheck]="false"
         ></textarea>
       </mat-form-field>
-    </div>
-    <div class="mt-3 flex flex-row justify-center">
-      <div class="mr-2">
-        <button
-          mat-flat-button
-          color="accent"
-          [disabled]="isLoadingSignal()"
-          [class.btn-loading-spinner]="isLoadingSignal()"
-          (click)="location.back()"
-        >
-          Cancel
-        </button>
-      </div>
-      <div>
-        <button
-          mat-flat-button
-          color="primary"
-          [disabled]="isLoadingSignal()"
-          [class.btn-loading-spinner]="isLoadingSignal()"
-          (click)="save$.next()"
-        >
-          Continue
-        </button>
-      </div>
     </div>
   </form>
 </div>

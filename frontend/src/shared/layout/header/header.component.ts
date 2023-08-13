@@ -1,9 +1,13 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+import { LoadingService } from '@shared/services/loading.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -16,12 +20,15 @@ import { MatTreeModule } from '@angular/material/tree';
     MatIconModule,
     MatMenuModule,
     MatTreeModule,
+    MatProgressBarModule,
+    NgIf,
   ],
 })
 export class HeaderComponent {
-  @Output() toggleSidebarForMe: EventEmitter<any> = new EventEmitter();
+  private readonly loadingService = inject(LoadingService);
+  readonly isLoadingSignal = this.loadingService.isLoadingSignal;
 
-  constructor() {}
+  @Output() toggleSidebarForMe: EventEmitter<any> = new EventEmitter();
 
   logout = () => {};
 
