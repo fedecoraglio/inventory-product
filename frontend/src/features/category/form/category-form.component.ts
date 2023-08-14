@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   Input,
   OnDestroy,
@@ -22,16 +23,20 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { Subject, filter, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  ReplaySubject,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 
 import { CategoryFormFields } from '../types/category-form-fields.enum';
 import { CategoryService } from '../services/category.service';
-import { ConfirmationModule } from '../../../shared/confirmation/confirmation.module';
-import { SnackBarModule } from '../../../shared/snack-bar/snack-bar.module';
-import { RoutePaths } from '../../../app.routes-path';
+import { ConfirmationModule } from '@shared/confirmation/confirmation.module';
+import { SnackBarModule } from '@shared/snack-bar/snack-bar.module';
+import { CategoryDto } from '../types/category.types';
 
 @Component({
   selector: 'app-category-form',
@@ -49,34 +54,23 @@ import { RoutePaths } from '../../../app.routes-path';
     ConfirmationModule,
     SnackBarModule,
   ],
-  providers: [CategoryService],
   templateUrl: './category-form.component.html',
   styleUrls: ['./category-form.component.scss'],
 })
-export class CategoryFormComponent implements OnInit, OnDestroy {
-  private readonly categoryService = inject(CategoryService);
-  private readonly route = inject(Router);
+export class CategoryFormComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly onDestroy$ = new Subject<void>();
-  private readonly pathEditFieldValue = computed(() => {
-    const category = this.categoryService.categorySignal();
-    this.categoryFormGroup.patchValue({
-      ...category,
-    });
-  });
-  readonly location = inject(Location);
   readonly save$ = new Subject<void>();
   readonly categoryFormFields = CategoryFormFields;
-  readonly categoryFormGroup = new FormGroup({
+  readonly formGroup = new FormGroup({
     [CategoryFormFields.Name]: new FormControl('', Validators.required),
     [CategoryFormFields.Description]: new FormControl(''),
   });
-  readonly isLoadingSignal = this.categoryService.isLoadingSignal;
-
-  // Mapping from routing
-  @Input() categoryId?: string;
+  readonly categoryData$ = new ReplaySubject<CategoryDto>(1);
+  @Input() set categoryData(categoryData: CategoryDto) {
+    this.categoryData$.next(categoryData);
+  }
 
   ngOnInit() {
-    this.handlerExecuteSave();
     this.pathEditData();
   }
 
@@ -85,39 +79,33 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
 
-  get isFormValid(): boolean {
-    this.categoryFormGroup.markAllAsTouched();
+  ngAfterViewInit() {
+    this.categoryData$.pipe(takeUntil(this.onDestroy$)).subscribe(dto => {
+      this.formGroup.patchValue(dto);
+      this.formGroup.updateValueAndValidity();
+    });
+  }
 
-    return this.categoryFormGroup?.valid;
+  get isValid(): boolean {
+    this.formGroup.markAllAsTouched();
+
+    return this.formGroup?.valid;
+  }
+
+  get value(): CategoryDto {
+    return this.formGroup.getRawValue();
   }
 
   private pathEditData() {
-    if (this.categoryId) {
-      this.categoryService
-        .getById$(this.categoryId)
-        .pipe(takeUntil(this.onDestroy$))
-        .subscribe(() => {
-          this.pathEditFieldValue();
-        });
-    }
-  }
-
-  private handlerExecuteSave() {
-    this.save$
-      .pipe(
-        filter(() => this.isFormValid),
-        switchMap(() => {
-          const data = this.categoryFormGroup.getRawValue();
-          if (this.categoryId) {
-            return this.categoryService.update$(this.categoryId, data);
-          } else {
-            return this.categoryService.save$(data);
-          }
-        }),
+    if (this.categoryData) {
+      this.categoryData$.pipe(
+        tap(data =>
+          this.formGroup.patchValue({
+            ...data,
+          }),
+        ),
         takeUntil(this.onDestroy$),
-      )
-      .subscribe(() => {
-        this.route.navigate([`/${RoutePaths.Categories}`]);
-      });
+      );
+    }
   }
 }

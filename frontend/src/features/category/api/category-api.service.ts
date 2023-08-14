@@ -17,7 +17,7 @@ export class CategoryApiService {
     return this.http.get<CategoryDto>(`${this.basePath}/${id}`);
   }
 
-  getAll$(params: Params = null): Observable<CategoryListDto> {
+  getAll$(): Observable<CategoryListDto> {
     return this.http.get<CategoryListDto>(this.basePath);
   }
 

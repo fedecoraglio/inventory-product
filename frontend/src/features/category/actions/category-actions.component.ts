@@ -2,21 +2,22 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  OnDestroy,
   OnInit,
   inject,
 } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Observable, Subject, of, switchMap } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { EMPTY, Observable, Subject, of, switchMap, takeUntil } from 'rxjs';
 
 import { CategoryDto } from '../types/category.types';
 import { CategoryService } from '../services/category.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { SnackBarModule } from '../../../shared/snack-bar/snack-bar.module';
-import { Router } from '@angular/router';
-import { RoutePaths } from '../../../app.routes-path';
-import { ConfirmationModule } from '../../../shared/confirmation/confirmation.module';
+import { SnackBarModule } from '@shared/snack-bar/snack-bar.module';
+import { ConfirmationModule } from '@shared/confirmation/confirmation.module';
+import { LoadingService } from '@shared/services/loading.service';
+import { CategoryEditComponent } from '../edit/category-edit.component';
 
 interface Action {
   name: string;
@@ -40,12 +41,12 @@ interface Action {
     AsyncPipe,
   ],
 })
-export class CategoryActionsComponent {
+export class CategoryActionsComponent implements OnDestroy {
+  private readonly matDialog = inject(MatDialog);
   private readonly categoryService = inject(CategoryService);
-  private readonly route = inject(Router);
-  private readonly deleteCategoryAction$ = new Subject<boolean>();
-  private readonly changeCategoryAction$ = new Subject<boolean>();
-  readonly isLoadingSignal = this.categoryService.isLoadingSignal;
+  private readonly loadingService = inject(LoadingService);
+  private readonly onDestroy$ = new Subject<void>();
+  readonly isLoadingSignal = this.loadingService.isLoadingSignal;
 
   @Input() category: CategoryDto;
 
@@ -53,47 +54,47 @@ export class CategoryActionsComponent {
     {
       name: 'edit',
       icon: 'edit',
-      handler: this.changeCategory.bind(this),
+      handler: () => this.editCategory(),
     },
     {
       name: 'delete',
       icon: 'delete',
-      handler: this.deleteCategory.bind(this),
+      handler: () => this.deleteCategory(),
     },
   ]);
 
-  constructor() {
-    this.deleteCategoryAction$
-      .pipe(
-        switchMap(() => this.categoryService.delete$(this.category.id)),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => {
-        this.route.navigate([`/${RoutePaths.Categories}`]);
-      });
-
-    this.changeCategoryAction$
-      .pipe(
-        switchMap(() =>
-          this.categoryService.getById$(this.category.id),
-        ),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => {
-        this.route.navigate([
-          `/${RoutePaths.Categories}/${this.category.id}`,
-        ]);
-      });
+  ngOnDestroy() {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
-  changeCategory() {
+  editCategory() {
     if (!this.category) {
       return;
     }
-    this.changeCategoryAction$.next(true);
+    this.matDialog
+      .open(CategoryEditComponent, {
+        disableClose: true,
+        width: '600px',
+        data: this.category,
+      })
+      .afterClosed()
+      .pipe(
+        switchMap(data => {
+          if (data) {
+            return this.categoryService.update$(data.id, data);
+          }
+          return EMPTY;
+        }),
+        takeUntil(this.onDestroy$),
+      )
+      .subscribe();
   }
 
   deleteCategory() {
-    this.deleteCategoryAction$.next(true);
+    this.categoryService
+      .delete$(this.category.id)
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe();
   }
 }

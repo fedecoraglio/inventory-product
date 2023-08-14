@@ -14,6 +14,7 @@ import { NgIf } from '@angular/common';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   standalone: true,
+  providers: [LoadingService],
   imports: [
     MatToolbarModule,
     MatButtonModule,

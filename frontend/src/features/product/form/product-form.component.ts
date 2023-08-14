@@ -31,6 +31,7 @@ import { CategoryService } from '../../category/services/category.service';
 import { FieldAutocompleteComponent } from '../../../shared/field-autocomplete/field-autocomplete.component';
 import { FieldAutocompletePipe } from '../../../shared/field-autocomplete/field-item-autocomplete.pipe';
 import { BrandService } from '../../brand/services/brand.service';
+import { LoadingService } from '../../../shared/services/loading.service';
 
 @Component({
   selector: 'app-product-form',
@@ -59,6 +60,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
   private readonly brandService = inject(BrandService);
+  private readonly loadingService = inject(LoadingService);
+
   private readonly route = inject(Router);
   private readonly onDestroy$ = new Subject<void>();
   private readonly pathEditFieldValue = computed(() => {
@@ -71,7 +74,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   readonly productSignal = this.productService.productSignal;
   readonly categoriesSignal = this.categoryService.categoriesSignal;
   readonly brandsSignal = this.brandService.brandsSignal;
-  readonly isLoadingCategorySignal = this.categoryService.isLoadingSignal;
+  readonly isLoadingSignal = this.loadingService.isLoadingSignal;
   readonly location = inject(Location);
   readonly save$ = new Subject<void>();
   readonly formFields = ProductFormFields;
@@ -80,7 +83,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     [ProductFormFields.Brand]: new FormControl(null, Validators.required),
     [ProductFormFields.Description]: new FormControl(''),
   });
-  readonly isLoadingSignal = this.productService.isLoadingSignal;
   categoryIds = [];
 
   // Mapping from routing

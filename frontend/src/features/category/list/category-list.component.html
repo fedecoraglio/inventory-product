@@ -12,28 +12,28 @@
   </div>
   <table mat-table [dataSource]="dataSource" class="w-full tbl rounded-lg">
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <th mat-header-cell *matHeaderCellDef class="w-3/12">Name</th>
       <td mat-cell *matCellDef="let category" [title]="category.name">
         {{ category.name }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="description">
-      <th mat-header-cell *matHeaderCellDef>Description</th>
+      <th mat-header-cell *matHeaderCellDef class="w-5/12">Description</th>
       <td mat-cell *matCellDef="let category" [title]="category.description">
         {{ category.description }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="createdAt">
-      <th mat-header-cell *matHeaderCellDef>Created At</th>
+      <th mat-header-cell *matHeaderCellDef class="w-2/12">Created At</th>
       <td mat-cell *matCellDef="let category" [title]="category.createdAt">
         {{ category.createdAt | date : 'dd/MM/yyyy' }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef class="actions"></th>
+      <th mat-header-cell *matHeaderCellDef  class="w-3/12 actions"></th>
       <td mat-cell *matCellDef="let category" class="actions">
         <app-category-actions [category]="category"></app-category-actions>
       </td>

@@ -5,7 +5,6 @@ import {
   filter,
   finalize,
   map,
-  of,
   switchMap,
   take,
   tap,
@@ -17,10 +16,11 @@ import {
   CategoryDto,
   CategoryListDto,
   CategoryPaginationDto,
-} from '../types/category.types';
-import { CategoryApiService } from '../api/category-api.service';
-import { ConfirmationService } from '../../../shared/confirmation/confirmation.service';
-import { SnackBarService } from '../../../shared/snack-bar/snack-bar.service';
+} from '@features/category/types/category.types';
+import { CategoryApiService } from '@features/category/api/category-api.service';
+import { ConfirmationService } from '@shared/confirmation/confirmation.service';
+import { SnackBarService } from '@shared/snack-bar/snack-bar.service';
+import { LoadingService } from '../../../shared/services/loading.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,37 +28,32 @@ import { SnackBarService } from '../../../shared/snack-bar/snack-bar.service';
 export class CategoryService {
   private readonly categoryApiService = inject(CategoryApiService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly loadingService = inject(LoadingService);
   private readonly snackBarService = inject(SnackBarService);
   // WritableSignal
   private readonly _categoriesSignal = signal<CategoryDto[]>([]);
   private readonly _categorySignal = signal<CategoryDto>(null);
   private readonly _countSignal = signal<number>(0);
-  private readonly _isLoadingSignal = signal<boolean>(false);
   // Immutable signal
   readonly categoriesSignal = computed(() => this._categoriesSignal() ?? []);
   readonly categorySignal = computed(() => this._categorySignal() ?? null);
   readonly countSignal = computed(() => this._countSignal());
-  readonly isLoadingSignal = computed(() => this._isLoadingSignal());
 
-  getAll$(appendData = false): Observable<CategoryListDto> {
-    this._isLoadingSignal.set(true);
-    let param: CategoryPaginationDto = { limit: 10 };
+  getAll$(): Observable<CategoryListDto> {
+    this.loadingService.showProcessBar();
 
-    return this.categoryApiService.getAll$(param).pipe(
+    return this.categoryApiService.getAll$().pipe(
       take(1),
       tap(({ items, count }) => {
-        if (appendData) {
-          const currentItems = this._categoriesSignal();
-          currentItems.push(...items);
-          this._categoriesSignal.set(currentItems);
-        } else {
-          this._categoriesSignal.set(items);
-        }
-
+        this._categoriesSignal.set(items);
         this._countSignal.set(count);
       }),
+      catchError(() => {
+        this.loadingService.hideProcessBar();
+        return EMPTY;
+      }),
       finalize(() => {
-        this._isLoadingSignal.set(false);
+        this.loadingService.hideProcessBar();
       }),
     );
   }
@@ -68,32 +63,44 @@ export class CategoryService {
       tap(category => {
         this._categorySignal.set(category);
       }),
+      catchError(() => {
+        this.loadingService.hideProcessBar();
+        return EMPTY;
+      }),
     );
   }
 
   save$(dto: CategoryDto): Observable<CategoryDto> {
-    this._isLoadingSignal.set(true);
     return this.categoryApiService.save$(dto).pipe(
+      take(1),
+      map(newCategory => {
+        this._categoriesSignal.mutate(items => items.unshift(newCategory));
+        return newCategory;
+      }),
       catchError(({ error }) => {
         this.snackBarService.showError(error?.message || error?.statusText);
+        this.loadingService.hideProcessBar();
 
         return EMPTY;
       }),
-      finalize(() => this._isLoadingSignal.set(false)),
     );
   }
 
   update$(id: string, dto: CategoryDto): Observable<CategoryDto> {
-    this._isLoadingSignal.update(isLoading => (isLoading = true));
     return this.categoryApiService.update$(id, dto).pipe(
+      take(1),
+      map(editCategory => {
+        this._categoriesSignal.update(items =>
+          items.map(item => (item.id === id ? { ...editCategory } : item)),
+        );
+        return editCategory;
+      }),
       catchError(({ error }) => {
         this.snackBarService.showError(error?.message || error?.statusText);
+        this.loadingService.hideProcessBar();
 
         return EMPTY;
       }),
-      finalize(() =>
-        this._isLoadingSignal.update(isLoading => (isLoading = false)),
-      ),
     );
   }
 

@@ -49,10 +49,12 @@ export class BrandComponent implements OnInit, OnDestroy {
   readonly isLoadingSignal = this.loadingService.isLoadingSignal;
 
   ngOnInit() {
+    this.loadingService.showProcessBar();
     this.showBrandList$
       .pipe(
         switchMap(() => this.brandService.getAll$()),
         takeUntil(this.onDestroy$),
+        //finalize(() => this.loadingService.hideProcessBar()),
       )
       .subscribe();
     this.showBrandList$.next();
