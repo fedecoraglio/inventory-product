@@ -17,9 +17,7 @@ export const routes: Routes = [
       {
         path: RoutePaths.Home,
         loadChildren: () =>
-          import('./features/home/home.routes').then(
-            ({ homeRoutes }) => homeRoutes,
-          ),
+          import('./features/home/home.routes').then(({ homeRoutes }) => homeRoutes),
       },
       {
         path: RoutePaths.Categories,
@@ -31,15 +29,18 @@ export const routes: Routes = [
       {
         path: RoutePaths.Products,
         loadChildren: () =>
-          import('./features/product/product.routes').then(
-            ({ productRoutes }) => productRoutes,
-          ),
+          import('./features/product/product.routes').then(({ productRoutes }) => productRoutes),
       },
       {
         path: RoutePaths.Brands,
         loadChildren: () =>
-          import('./features/brand/brand.routes').then(
-            ({ brandRoutes }) => brandRoutes,
+          import('./features/brand/brand.routes').then(({ brandRoutes }) => brandRoutes),
+      },
+      {
+        path: RoutePaths.Suppliers,
+        loadChildren: () =>
+          import('./features/supplier/supplier.routes').then(
+            ({ supplierRoutes }) => supplierRoutes,
           ),
       },
     ],

@@ -12,17 +12,17 @@ import { Subject, filter, takeUntil } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 
 import { SnackBarModule } from '@shared/snack-bar/snack-bar.module';
-import { BrandService } from '@features/brand/services/brand.service';
+import { SupplierService } from '@features/supplier/services/supplier.service';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { BrandDto } from '../types/brand.types';
-import { BrandFormComponent } from '../form/brand-form.component';
+import { SupplierDto } from '@features/supplier/types/supplier.types';
+import { SupplierFormComponent } from '@features/supplier/form/supplier-form.component';
 
 @Component({
-  selector: 'app-brand-add',
+  selector: 'app-supplier-add',
   standalone: true,
   imports: [
     CommonModule,
@@ -33,26 +33,26 @@ import { BrandFormComponent } from '../form/brand-form.component';
     NgIf,
     NgFor,
     SnackBarModule,
-    BrandFormComponent,
+    SupplierFormComponent,
   ],
-  providers: [BrandService],
-  templateUrl: './brand-add.component.html',
+  providers: [SupplierService],
+  templateUrl: './supplier-add.component.html',
 })
-export class BrandAddComponent implements OnInit, OnDestroy {
+export class SupplierAddComponent implements OnInit, OnDestroy {
   private readonly onDestroy$ = new Subject<void>();
-  readonly dialogRef: MatDialogRef<BrandDto> = inject(MatDialogRef);
-  readonly brandData: BrandDto = inject(MAT_DIALOG_DATA);
+  readonly dialogRef: MatDialogRef<SupplierDto> = inject(MatDialogRef);
+  readonly supplierData: SupplierDto = inject(MAT_DIALOG_DATA);
   readonly save$ = new Subject<void>();
-  @ViewChild('brandForm') brandForm: BrandFormComponent;
+  @ViewChild('supplierForm') supplierForm: SupplierFormComponent;
 
   ngOnInit() {
     this.dialogRef.updateSize('90%', '85%');
     this.save$
       .pipe(
-        filter(() => this.brandForm.isValid),
+        filter(() => this.supplierForm.isValid),
         takeUntil(this.onDestroy$),
       )
-      .subscribe(() => this.dialogRef.close(this.brandForm.value ?? null));
+      .subscribe(() => this.dialogRef.close(this.supplierForm.value ?? null));
   }
 
   ngOnDestroy() {
@@ -63,5 +63,4 @@ export class BrandAddComponent implements OnInit, OnDestroy {
   cancel() {
     this.dialogRef.close(null);
   }
-
 }

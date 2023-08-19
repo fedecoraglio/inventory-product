@@ -1,5 +1,11 @@
 import type { AWS } from '@serverless/typescript';
 
+// Suppliers
+import supplierCreate from '@functions/suppliers/create';
+import supplierList from '@functions/suppliers/list';
+import supplierDetail from '@functions/suppliers/detail';
+import supplierUpdate from '@functions/suppliers/update';
+import supplierDelete from '@functions/suppliers/delete';
 // Brands
 import brandCreate from '@functions/brands/create';
 import brandList from '@functions/brands/list';
@@ -47,6 +53,11 @@ const serverlessConfiguration: AWS = {
 
   // import the function via paths
   functions: {
+    supplierCreate,
+    supplierList,
+    supplierDetail,
+    supplierUpdate,
+    supplierDelete,
     brandCreate,
     brandList,
     brandDetail,

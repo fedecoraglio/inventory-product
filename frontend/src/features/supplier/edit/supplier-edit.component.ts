@@ -9,11 +9,11 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 
-import { BrandDto } from '../types/brand.types';
-import { BrandFormComponent } from '../form/brand-form.component';
+import { SupplierDto } from '@features/supplier/types/supplier.types';
+import { SupplierFormComponent } from '@features/supplier/form/supplier-form.component';
 
 @Component({
-  selector: 'app-brand-edit',
+  selector: 'app-supplier-edit',
   standalone: true,
   imports: [
     CommonModule,
@@ -22,28 +22,28 @@ import { BrandFormComponent } from '../form/brand-form.component';
     NgIf,
     NgFor,
     SnackBarModule,
-    BrandFormComponent,
+    SupplierFormComponent,
   ],
-  templateUrl: './brand-edit.component.html',
+  templateUrl: './supplier-edit.component.html',
 })
-export class BrandEditComponent implements OnInit, OnDestroy {
+export class SupplierEditComponent implements OnInit, OnDestroy {
   private readonly onDestroy$ = new Subject<void>();
-  readonly dialogRef: MatDialogRef<BrandDto> = inject(MatDialogRef);
-  readonly brandData: BrandDto = inject(MAT_DIALOG_DATA);
+  readonly dialogRef: MatDialogRef<SupplierDto> = inject(MatDialogRef);
+  readonly supplierData: SupplierDto = inject(MAT_DIALOG_DATA);
   readonly execute$ = new Subject<void>();
-  @ViewChild('brandForm') brandForm: BrandFormComponent;
+  @ViewChild('supplierForm') supplierForm: SupplierFormComponent;
 
   ngOnInit() {
     this.dialogRef.updateSize('90%', '85%');
     this.execute$
       .pipe(
-        filter(() => this.brandForm.isValid),
+        filter(() => this.supplierForm.isValid),
         takeUntil(this.onDestroy$),
       )
       .subscribe(() =>
         this.dialogRef.close({
-          ...this.brandForm.value,
-          id: this.brandData.id,
+          ...this.supplierForm.value,
+          id: this.supplierData.id,
         }),
       );
   }

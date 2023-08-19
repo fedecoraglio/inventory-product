@@ -15,6 +15,18 @@ type MetaData {
   content String
 }
 
+model Supplier {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  email       String   @unique
+  phoneNumber String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map(name: "suppliers")
+}
+
 model Brand {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
   name        String    @unique
@@ -32,7 +44,7 @@ model Product {
   description String
   categoryIds String[]   @db.ObjectId
   categories  Category[] @relation(fields: [categoryIds], references: [id])
-  brand       Brand    @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  brand       Brand      @relation(fields: [brandId], references: [id], onDelete: Restrict)
   brandId     String     @db.ObjectId
   metaData    MetaData[]
   createdAt   DateTime

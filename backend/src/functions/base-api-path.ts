@@ -1,3 +1,4 @@
 export enum BaseApiPath {
-    BRAND = 'brands'
+    BRAND = 'brands',
+    SUPPLIER = 'suppliers'
 }

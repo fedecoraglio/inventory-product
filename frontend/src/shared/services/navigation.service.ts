@@ -46,6 +46,12 @@ export class NavigationService {
         icon: 'branding_watermark',
         text: 'Brands',
       },
+      {
+        order: 5,
+        link: RoutePaths.Suppliers,
+        icon: 'people',
+        text: 'Suppliers',
+      },
     ];
   }
 }
