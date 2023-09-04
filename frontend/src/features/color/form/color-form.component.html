@@ -1,0 +1,27 @@
+<div mat-dialog-content class="flex flex-col">
+  <form [formGroup]="formGroup">
+    <div class="mt-3">
+      <mat-form-field class="w-full">
+        <mat-label class="required"> Name </mat-label>
+        <input
+          matInput
+          [formControlName]="colorFormFields.Name"
+          [spellcheck]="false"
+        />
+        <mat-error>Name is required</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="mt-3">
+      <mat-form-field class="w-full">
+        <mat-label> Description </mat-label>
+        <textarea
+          matInput
+          row="50"
+          row="50"
+          [formControlName]="colorFormFields.Description"
+          [spellcheck]="false"
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </form>
+</div>

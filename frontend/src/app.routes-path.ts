@@ -3,5 +3,7 @@ export enum RoutePaths {
   Categories = 'categories',
   Products = 'products',
   Brands = 'brands',
-  Suppliers = 'suppliers'
+  Suppliers = 'suppliers',
+  Purchases = 'purchases',
+  Colors = 'colors',
 }

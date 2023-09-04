@@ -1,0 +1,9 @@
+<div class="flex flex-col space-y-5">
+  <div class="flex flex-row justify-between">
+    <h2>Colors</h2>
+    <button mat-flat-button color="primary" (click)="executeNew()">New</button>
+  </div>
+  <div class="w-full" *ngIf="!isLoadingSignal()">
+    <app-color-list [colors]="colorsSignal()"></app-color-list>
+  </div>
+</div>

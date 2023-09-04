@@ -43,6 +43,18 @@ export const routes: Routes = [
             ({ supplierRoutes }) => supplierRoutes,
           ),
       },
+      {
+        path: RoutePaths.Purchases,
+        loadChildren: () =>
+          import('./features/purchase/purchase.routes').then(
+            ({ purchaseRoutes }) => purchaseRoutes,
+          ),
+      },
+      {
+        path: RoutePaths.Colors,
+        loadChildren: () =>
+          import('./features/color/color.routes').then(({ colorRoutes }) => colorRoutes),
+      },
     ],
   },
 ];

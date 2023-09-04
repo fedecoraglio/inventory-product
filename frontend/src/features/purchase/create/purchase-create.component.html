@@ -1,0 +1,12 @@
+<div class="flex flex-col space-y-5">
+  <div class="flex flex-row justify-between">
+    <h2>New Purchase</h2>
+  </div>
+  <div class="w-full">
+      <app-purchase-form #purchaseForm></app-purchase-form>
+  </div>
+  <div class="flex flex-row space-x-3 justify-end">
+    <button mat-flat-button color="accent">Cancel</button>
+    <button mat-flat-button cdkFocusInitial color="primary" (click)="save$.next()">Save</button>
+  </div>
+</div>

@@ -1,34 +1,10 @@
-import {
-  AfterViewInit,
-  Component,
-  Input,
-  OnDestroy,
-  OnInit,
-  computed,
-  inject,
-} from '@angular/core';
-import {
-  AsyncPipe,
-  CommonModule,
-  NgFor,
-  NgIf,
-  Location,
-} from '@angular/common';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import {
-  ReplaySubject,
-  Subject,
-  takeUntil,
-  tap,
-} from 'rxjs';
+import { ReplaySubject, Subject, takeUntil, tap } from 'rxjs';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 

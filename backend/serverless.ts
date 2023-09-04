@@ -6,6 +6,12 @@ import supplierList from '@functions/suppliers/list';
 import supplierDetail from '@functions/suppliers/detail';
 import supplierUpdate from '@functions/suppliers/update';
 import supplierDelete from '@functions/suppliers/delete';
+// Colors
+import colorCreate from '@functions/colors/create';
+import colorList from '@functions/colors/list';
+import colorDetail from '@functions/colors/detail';
+import colorUpdate from '@functions/colors/update';
+import colorDelete from '@functions/colors/delete';
 // Brands
 import brandCreate from '@functions/brands/create';
 import brandList from '@functions/brands/list';
@@ -58,6 +64,11 @@ const serverlessConfiguration: AWS = {
     supplierDetail,
     supplierUpdate,
     supplierDelete,
+    colorCreate,
+    colorList,
+    colorDetail,
+    colorUpdate,
+    colorDelete,
     brandCreate,
     brandList,
     brandDetail,
